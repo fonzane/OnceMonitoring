@@ -13,9 +13,16 @@ builder.Services.AddControllers();
 var databaseSettings = builder.Configuration.GetSection("DatabaseSettings");
 var connectionString = databaseSettings.GetValue<string>("ConnectionString");
 var databaseName = databaseSettings.GetValue<string>("DatabaseName");
+var collectionName = databaseSettings.GetValue<string>("ConnectionName");
+const long maxByteSize = 10L * 1024 * 1024 * 1024; // 10 GB in bytes
 
 // Register DatabaseConfig as a singleton
-builder.Services.AddSingleton(new DatabaseConfig(connectionString, databaseName));
+if (connectionString == null || databaseName == null || collectionName == null)
+{
+  Console.WriteLine("Failed to load database config. Aborting...");
+  return;
+}
+builder.Services.AddSingleton(new DatabaseConfig(connectionString, databaseName, collectionName ,maxByteSize));
 
 var app = builder.Build();
 

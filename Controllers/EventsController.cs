@@ -23,7 +23,7 @@ namespace WebServerExample.Controllers
             if (DataFilterService.FilterData(data))
             {
                 // Get the MongoDB collection
-                var collection = _databaseConfig.GetCollection<BsonDocument>("OnceEvents");
+                var collection = _databaseConfig._collection;
 
                 // Convert data to BSON and insert into MongoDB
                 var bsonData = data.ToBsonDocument();
