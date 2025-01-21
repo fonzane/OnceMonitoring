@@ -17,7 +17,7 @@ namespace WebServerExample.Models
     public class EventType
     {
         public int id { get; set; }
-        public string? Description { get; set; }
+        public string? description { get; set; }
     }
 
     public class EventSeverity
