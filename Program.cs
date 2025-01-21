@@ -19,6 +19,7 @@ const long maxByteSize = 10L * 1024 * 1024 * 1024; // 10 GB in bytes
 // Register DatabaseConfig as a singleton
 if (connectionString == null || databaseName == null || collectionName == null)
 {
+  Console.WriteLine(connectionString, databaseName, collectionName);
   Console.WriteLine("Failed to load database config. Aborting...");
   return;
 }
