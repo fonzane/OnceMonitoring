@@ -1,4 +1,4 @@
-using WebServerExample.Models;
+using OnceMonitoring.Models;
 
 namespace WebServerExample.Services
 {
@@ -12,7 +12,11 @@ namespace WebServerExample.Services
         Console.WriteLine("Received valid data. Description: " + data.description + " - Event Type: " + data.event_type.description + " - Source: " + data.event_source.description + " - IMEI: " + data.endpoint?.imei);
         return true;
       }
-      else return false;
+      else
+      {
+        Console.WriteLine("Received Data not matching event type: " + data.event_type.description);
+        return false;
+      }
     }
   }
 }

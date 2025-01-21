@@ -1,9 +1,9 @@
 using Microsoft.AspNetCore.Mvc.Diagnostics;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using WebServerExample.Models;
+using OnceMonitoring.Models;
 
-namespace WebServerExample.Config
+namespace OnceMonitoring.Config
 {
   public class DatabaseConfig
   {

@@ -1,4 +1,4 @@
-namespace WebServerExample.Models
+namespace OnceMonitoring.Models
 {
     public class EventDataModel
     {

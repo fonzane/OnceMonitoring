@@ -1,10 +1,15 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using WebServerExample.Config;
+using Microsoft.AspNetCore.Authentication;
+using OnceMonitoring.Config;
+using OnceMonitoring.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Bind the Authentication section from appsettings.json to AuthenticationConfig
+builder.Services.Configure<AuthenticationConfig>(builder.Configuration.GetSection("Authentication"));
+
+// Register services
+builder.Services.AddAuthentication("BasicAuthentication")
+    .AddScheme<AuthenticationSchemeOptions, BasicAuthenticationHandler>("BasicAuthentication", null);
 
 // Add services to the container
 builder.Services.AddControllers();
@@ -27,8 +32,12 @@ builder.Services.AddSingleton(new DatabaseConfig(connectionString, databaseName,
 
 var app = builder.Build();
 
-// Configure middleware and endpoints
 app.UseRouting();
+// Ensure the authentication and authorization middleware are used correctly
+app.UseAuthentication();  // This should be before UseAuthorization
+app.UseAuthorization();   // Ensure authorization is checked after authentication
+
+// Configure middleware and endpoints
 app.MapControllers();
 
 app.Run();

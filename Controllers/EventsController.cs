@@ -1,13 +1,15 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
-using WebServerExample.Config;
-using WebServerExample.Models;
+using OnceMonitoring.Config;
+using OnceMonitoring.Models;
 using WebServerExample.Services;
 
 namespace WebServerExample.Controllers
 {
     [ApiController]
-    [Route("[controller]")]
+    [Route("events")]
+    [Authorize]
     public class DataController : ControllerBase
     {
         private readonly DatabaseConfig _databaseConfig;

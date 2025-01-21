@@ -8,4 +8,4 @@ obj/
 *.vscode/
 
 # Sensitive files
-# appsettings.json
+appsettings.json
