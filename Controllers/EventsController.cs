@@ -8,13 +8,23 @@ using WebServerExample.Services;
 namespace WebServerExample.Controllers
 {
     [ApiController]
+    [Route("")]
+    public class HomeController : ControllerBase
+    {
+        [HttpGet]
+        public IActionResult Get()
+        {
+            return Ok("hello world");
+        }
+    }
+    [ApiController]
     [Route("events")]
     [Authorize]
-    public class DataController : ControllerBase
+    public class EventController : ControllerBase
     {
         private readonly DatabaseConfig _databaseConfig;
 
-        public DataController(DatabaseConfig databaseConfig)
+        public EventController(DatabaseConfig databaseConfig)
         {
             _databaseConfig = databaseConfig;
         }

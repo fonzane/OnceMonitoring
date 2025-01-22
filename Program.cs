@@ -13,6 +13,8 @@ builder.Services.AddAuthentication("BasicAuthentication")
 
 // Add services to the container
 builder.Services.AddControllers();
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 
 // Load database configuration from appsettings.json
 var databaseSettings = builder.Configuration.GetSection("DatabaseSettings");
@@ -32,12 +34,21 @@ builder.Services.AddSingleton(new DatabaseConfig(connectionString, databaseName,
 
 var app = builder.Build();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
 app.UseRouting();
 // Ensure the authentication and authorization middleware are used correctly
+app.UseHttpsRedirection();
 app.UseAuthentication();  // This should be before UseAuthorization
 app.UseAuthorization();   // Ensure authorization is checked after authentication
-
+app.UseAuthentication();
+app.UseAuthorization();
 // Configure middleware and endpoints
 app.MapControllers();
-
+var urls = builder.Configuration.GetSection("Kestrel:Endpoints:Http:Url").Value ?? "http://0.0.0.0:5001";
+app.Urls.Add(urls);
 app.Run();
