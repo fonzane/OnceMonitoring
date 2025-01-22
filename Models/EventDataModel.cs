@@ -94,16 +94,16 @@ namespace OnceMonitoring.Models
         public string? region { get; set; }
         public string? breakout_ip { get; set; }
         public string? apn { get; set; }
-        public int nsapi { get; set; }
+        public int? nsapi { get; set; }
         public string? ue_ip_address { get; set; }
         public string? imeisv { get; set; }
         public string? mcc { get; set; }
         public string? mnc { get; set; }
-        public int lac { get; set; }
-        public int sac { get; set; }
-        public int rac { get; set; }
-        public int ci { get; set; }
-        public int rat_type { get; set; }
+        public int? lac { get; set; }
+        public int? sac { get; set; }
+        public int? rac { get; set; }
+        public int? ci { get; set; }
+        public int? rat_type { get; set; }
     }
 
     public class Volume
