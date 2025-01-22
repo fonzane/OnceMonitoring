@@ -12,6 +12,7 @@ namespace OnceMonitoring.Models
         public Endpoint? endpoint { get; set; }
         public EventType? event_type { get; set; }
         public DateTime timestamp { get; set; }
+        public Detail? detail { get; set; }
     }
 
     public class EventType
@@ -62,7 +63,7 @@ namespace OnceMonitoring.Models
         public string? imei { get; set; }
     }
 
-    public class Details
+    public class Detail
     {
         public int id { get; set; }
         public string? name { get; set; }
