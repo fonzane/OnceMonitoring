@@ -30,21 +30,34 @@ namespace WebServerExample.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostData([FromBody] EventDataModel data)
+        public async Task<IActionResult> PostData([FromBody] List<EventDataModel> data)
         {
-            if (DataFilterService.FilterData(data))
-            {
-                // Get the MongoDB collection
-                var collection = _databaseConfig._collection;
+            bool dataSaved = false;
+            var collection = _databaseConfig._collection;
 
-                // Convert data to BSON and insert into MongoDB
-                var bsonData = data.ToBsonDocument();
-                await collection.InsertOneAsync(bsonData);
-
-                return Ok("Data saved successfully.");
+            if (data == null || !data.Any()) {
+                return BadRequest("Invalid data.");
             }
 
-            return BadRequest("Data does not meet the filter criteria.");
+            foreach (EventDataModel item in data) {
+                if (DataFilterService.FilterData(item))
+                {
+                    dataSaved = true;
+                    // Get the MongoDB collection
+
+                    // Convert data to BSON and insert into MongoDB
+                    var bsonData = item.ToBsonDocument();
+                    await collection.InsertOneAsync(bsonData);
+                }
+            }
+            if (dataSaved)
+            {
+                return Ok("Data saved successfully.");
+            } else
+            {
+                return Ok("Couldn't find matching data.");
+            }
+
         }
     }
 }
