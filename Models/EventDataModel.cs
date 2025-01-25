@@ -1,7 +1,13 @@
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
+
 namespace OnceMonitoring.Models
 {
     public class EventDataModel
     {
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string _id { get; set; } = ObjectId.GenerateNewId().ToString();
         public EventSource? event_source { get; set; }
         public Organisation? organisation { get; set; }
         public EventSeverity? event_severity { get; set; }
