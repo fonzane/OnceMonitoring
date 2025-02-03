@@ -1,8 +1,15 @@
 using Microsoft.AspNetCore.Authentication;
+using Microsoft.Extensions.Hosting.WindowsServices;
 using OnceMonitoring.Config;
 using OnceMonitoring.Auth;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// Aktiviert den Dienstmodus für Windows, wenn die Anwendung als Dienst ausgeführt wird
+if (WindowsServiceHelpers.IsWindowsService())
+{
+    builder.Host.UseWindowsService();
+}
 
 // Bind the Authentication section from appsettings.json to AuthenticationConfig
 builder.Services.Configure<AuthenticationConfig>(builder.Configuration.GetSection("Authentication"));
@@ -24,9 +31,8 @@ var collectionName = databaseSettings.GetValue<string>("ConnectionName");
 const long maxByteSize = 10L * 1024 * 1024 * 1024; // 10 GB in bytes
 
 // Register DatabaseConfig as a singleton
-if (connectionString == null || databaseName == null || collectionName == null)
+if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(databaseName) || string.IsNullOrEmpty(collectionName))
 {
-  Console.WriteLine(connectionString, databaseName, collectionName);
   Console.WriteLine("Failed to load database config. Aborting...");
   return;
 }
@@ -41,14 +47,16 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
+
 // Ensure the authentication and authorization middleware are used correctly
 app.UseHttpsRedirection();
 app.UseAuthentication();  // This should be before UseAuthorization
 app.UseAuthorization();   // Ensure authorization is checked after authentication
-app.UseAuthentication();
-app.UseAuthorization();
+
 // Configure middleware and endpoints
 app.MapControllers();
+
 var urls = builder.Configuration.GetSection("Kestrel:Endpoints:Http:Url").Value ?? "http://0.0.0.0:5001";
 app.Urls.Add(urls);
+
 app.Run();
