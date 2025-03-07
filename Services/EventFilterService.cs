@@ -9,7 +9,13 @@ namespace WebServerExample.Services
     {
       if (validEventIDs.Contains(data.event_type.id))
       {
-        Console.WriteLine(data.timestamp.ToLocalTime() + " Description: " + data.description + " - Event Type: " + data.event_type.description + " - Source: " + data.event_source.description + " - IMEI: " + data.endpoint?.imei);
+        Console.WriteLine(
+          data.timestamp.ToLocalTime() +
+          " Description: " + data.description +
+          " - Event Type: " + (data.event_type?.description ?? "keine Event Type") +
+          " - Source: " + (data.event_source?.description ?? "keine Source") +
+          " - IMEI: " + (data.endpoint?.imei ?? "keine IMEI")
+        );
         return true;
       }
       else
