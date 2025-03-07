@@ -1,12 +1,12 @@
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.Hosting.WindowsServices;
 using OnceMonitoring.Config;
 using OnceMonitoring.Auth;
+using System.Runtime.InteropServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Aktiviert den Dienstmodus für Windows, wenn die Anwendung als Dienst ausgeführt wird
-if (WindowsServiceHelpers.IsWindowsService())
+// Nur auf Windows den Windows-Dienstmodus aktivieren
+if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))
 {
     builder.Host.UseWindowsService();
 }
@@ -23,6 +23,10 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
+// Optional: Logging-Provider anpassen, um EventLog zu vermeiden
+builder.Logging.ClearProviders();
+builder.Logging.AddConsole();
+
 // Load database configuration from appsettings.json
 var databaseSettings = builder.Configuration.GetSection("DatabaseSettings");
 var connectionString = databaseSettings.GetValue<string>("ConnectionString");
@@ -33,10 +37,10 @@ const long maxByteSize = 10L * 1024 * 1024 * 1024; // 10 GB in bytes
 // Register DatabaseConfig as a singleton
 if (string.IsNullOrEmpty(connectionString) || string.IsNullOrEmpty(databaseName) || string.IsNullOrEmpty(collectionName))
 {
-  Console.WriteLine("Failed to load database config. Aborting...");
-  return;
+    Console.WriteLine("Failed to load database config. Aborting...");
+    return;
 }
-builder.Services.AddSingleton(new DatabaseConfig(connectionString, databaseName, collectionName ,maxByteSize));
+builder.Services.AddSingleton(new DatabaseConfig(connectionString, databaseName, collectionName, maxByteSize));
 
 var app = builder.Build();
 
@@ -47,13 +51,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseRouting();
-
-// Ensure the authentication and authorization middleware are used correctly
 app.UseHttpsRedirection();
-app.UseAuthentication();  // This should be before UseAuthorization
-app.UseAuthorization();   // Ensure authorization is checked after authentication
-
-// Configure middleware and endpoints
+app.UseAuthentication();
+app.UseAuthorization();
 app.MapControllers();
 
 var urls = builder.Configuration.GetSection("Kestrel:Endpoints:Http:Url").Value ?? "http://0.0.0.0:5001";
