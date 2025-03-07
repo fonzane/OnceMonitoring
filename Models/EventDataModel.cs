@@ -8,15 +8,15 @@ namespace OnceMonitoring.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; } = ObjectId.GenerateNewId().ToString();
-        public required EventSource event_source { get; set; }
-        public required Organisation organisation { get; set; }
-        public required EventSeverity event_severity { get; set; }
+        public EventSource? event_source { get; set; }
+        public Organisation? organisation { get; set; }
+        public EventSeverity? event_severity { get; set; }
         public SIM? sim { get; set; }
-        public required string description { get; set; }
+        public string? description { get; set; }
         public bool alert { get; set; }
         public long id { get; set; }
         public Endpoint? endpoint { get; set; }
-        public required EventType event_type { get; set; }
+        public EventType? event_type { get; set; }
         public DateTime timestamp { get; set; }
         public Detail? detail { get; set; }
     }
