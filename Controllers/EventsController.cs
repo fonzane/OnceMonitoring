@@ -36,7 +36,7 @@ namespace WebServerExample.Controllers
             var collection = _databaseConfig._collection;
 
             if (data == null || !data.Any()) {
-                return BadRequest("Invalid data.");
+                return NoContent();
             }
 
             foreach (EventDataModel item in data) {
