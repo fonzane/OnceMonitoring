@@ -32,32 +32,40 @@ namespace WebServerExample.Controllers
         [HttpPost]
         public async Task<IActionResult> PostData([FromBody] List<EventDataModel> data)
         {
-            bool dataSaved = false;
-            var collection = _databaseConfig._collection;
+            try
+            {
+                bool dataSaved = false;
+                var collection = _databaseConfig._collection;
 
 
-            if (data == null || !data.Any()) {
-                Console.WriteLine("Return NoContent");
-                return NoContent();
-            }
+                if (data == null || !data.Any()) {
+                    Console.WriteLine("Return NoContent");
+                    return NoContent();
+                }
 
-            foreach (EventDataModel item in data) {
-                if (DataFilterService.FilterData(item))
+                foreach (EventDataModel item in data) {
+                    if (DataFilterService.FilterData(item))
+                    {
+                        dataSaved = true;
+                        // Get the MongoDB collection
+
+                        // Convert data to BSON and insert into MongoDB
+                        var bsonData = item.ToBsonDocument();
+                        await collection.InsertOneAsync(bsonData);
+                    }
+                }
+                if (dataSaved)
                 {
-                    dataSaved = true;
-                    // Get the MongoDB collection
-
-                    // Convert data to BSON and insert into MongoDB
-                    var bsonData = item.ToBsonDocument();
-                    await collection.InsertOneAsync(bsonData);
+                    return Ok("Data saved successfully.");
+                } else
+                {
+                    return Ok("Couldn't find matching data.");
                 }
             }
-            if (dataSaved)
+            catch (Exception ex)
             {
-                return Ok("Data saved successfully.");
-            } else
-            {
-                return Ok("Couldn't find matching data.");
+                Console.WriteLine($"Error occurred: {ex.Message}");
+                return StatusCode(500, "An internal server error occurred.");
             }
 
         }
