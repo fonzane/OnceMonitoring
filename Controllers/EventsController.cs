@@ -35,7 +35,7 @@ namespace WebServerExample.Controllers
         {
             try
             {
-                Console.WriteLine($"Received JSON: {jsonData}");
+                Console.WriteLine($"{DateTime.Now.ToLocalTime()} Received JSON: {jsonData}");
 
                 List<EventDataModel> dataList = new();
 
