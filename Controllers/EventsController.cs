@@ -35,7 +35,9 @@ namespace WebServerExample.Controllers
             bool dataSaved = false;
             var collection = _databaseConfig._collection;
 
+
             if (data == null || !data.Any()) {
+                Console.WriteLine("Return NoContent");
                 return NoContent();
             }
 
