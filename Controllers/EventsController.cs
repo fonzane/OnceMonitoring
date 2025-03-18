@@ -1,3 +1,4 @@
+using System.Text.Json;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MongoDB.Bson;
@@ -30,34 +31,60 @@ namespace WebServerExample.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostData([FromBody] List<EventDataModel>? data)
+        public async Task<IActionResult> PostData([FromBody] JsonElement jsonData)
         {
             try
             {
-                bool dataSaved = false;
-                var collection = _databaseConfig._collection;
+                Console.WriteLine($"Received JSON: {jsonData}");
 
+                List<EventDataModel> dataList = new();
 
-                if (data == null || !data.Any()) {
-                    Console.WriteLine("Return NoContent");
+                // Check if jsonData is an object (`{}`)
+                if (jsonData.ValueKind == JsonValueKind.Object)
+                {
+                    Console.WriteLine("Received a single object instead of a list.");
+                    var singleItem = JsonSerializer.Deserialize<EventDataModel>(jsonData.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
+                    if (singleItem != null)
+                    {
+                        dataList.Add(singleItem);
+                    }
+                }
+                // Check if jsonData is an array (`[...]`)
+                else if (jsonData.ValueKind == JsonValueKind.Array)
+                {
+                    Console.WriteLine("Received a list of objects.");
+                    dataList = JsonSerializer.Deserialize<List<EventDataModel>>(jsonData.GetRawText(), new JsonSerializerOptions { PropertyNameCaseInsensitive = true }) ?? new List<EventDataModel>();
+                }
+                else
+                {
+                    Console.WriteLine("Invalid JSON format received.");
+                    return Ok("Invalid JSON format. Expected an object or an array.");
+                }
+
+                if (!dataList.Any())
+                {
+                    Console.WriteLine("No valid data found. Returning NoContent.");
                     return NoContent();
                 }
 
-                foreach (EventDataModel item in data) {
+                // Process and insert data into MongoDB
+                var collection = _databaseConfig._collection;
+                bool dataSaved = false;
+
+                foreach (var item in dataList)
+                {
                     if (DataFilterService.FilterData(item))
                     {
                         dataSaved = true;
-                        // Get the MongoDB collection
-
-                        // Convert data to BSON and insert into MongoDB
-                        var bsonData = item.ToBsonDocument();
-                        await collection.InsertOneAsync(bsonData);
+                        await collection.InsertOneAsync(item.ToBsonDocument());
                     }
                 }
+
                 if (dataSaved)
                 {
                     return Ok("Data saved successfully.");
-                } else
+                }
+                else
                 {
                     return Ok("Couldn't find matching data.");
                 }
