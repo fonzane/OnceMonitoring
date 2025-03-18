@@ -23,31 +23,31 @@ namespace OnceMonitoring.Models
 
     public class EventType
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string? description { get; set; }
     }
 
     public class EventSeverity
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string? description { get; set; }
     }
 
     public class EventSource
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string? description { get; set; }
     }
 
     public class Organisation
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string? name { get; set; }
     }
 
     public class IMSI
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string? imsi { get; set; }
         public DateTime import_date { get; set; }
     }
@@ -56,13 +56,13 @@ namespace OnceMonitoring.Models
     {
         public string? msisdn { get; set; }
         public string? iccid { get; set; }
-        public int id { get; set; }
+        public long id { get; set; }
         public DateTime production_date { get; set; }
     }
 
     public class Endpoint
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string? name { get; set; }
         public string? ip_address { get; set; }
         public string? tags { get; set; }
@@ -71,7 +71,7 @@ namespace OnceMonitoring.Models
 
     public class Detail
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string? name { get; set; }
         public Country? country { get; set; }
         public PdpContext? pdp_context { get; set; }
@@ -81,7 +81,7 @@ namespace OnceMonitoring.Models
 
     public class Country
     {
-        public int id { get; set; }
+        public long id { get; set; }
         public string? name { get; set; }
         public string? country_code { get; set; }
         public string? mcc { get; set; }
@@ -90,7 +90,7 @@ namespace OnceMonitoring.Models
 
     public class PdpContext
     {
-        public int pdp_context_id { get; set; }
+        public long pdp_context_id { get; set; }
         public DateTime tunnel_created { get; set; }
         public string? gpt_version { get; set; }
         public string? ggsn_control_plane_ip_address { get; set; }
