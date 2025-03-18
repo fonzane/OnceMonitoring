@@ -30,7 +30,7 @@ namespace WebServerExample.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostData([FromBody] List<EventDataModel> data)
+        public async Task<IActionResult> PostData([FromBody] List<EventDataModel>? data)
         {
             try
             {
